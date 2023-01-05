@@ -66,12 +66,12 @@ To find the range of a field in a LogScale query, you can use the `max()` and `m
 
 For example, to find the range of the `{field}` field in the `{dataset}` dataset, you could use the following query:
 
-    ```sql
-    | from {dataset}
-    | where {field} != null
-    | stats max({field}) as max, min({field}) as min
-    | eval range = max - min
-    ```
+TODO: Calculate Range
+```sql
+| where {field} != null
+| stats max({field}) as max, min({field}) as min
+| eval range = max - min
+```
 
 This query filters out any null values for the {field} field, and then calculates the maximum and minimum values using the max() and min() functions. It then uses the eval operator to calculate the range by subtracting the minimum value from the maximum value. The result will be a single row with three columns: max, which contains the maximum value of the {field} field, min, which contains the minimum value of the {field} field, and range, which contains the range of the {field} field
 
@@ -83,12 +83,11 @@ The variance is a measure of the spread or dispersion of a set of data. It is ca
 
 To find the variance of a field in a LogScale query, you can use the variance() function
 
-    ```sql
-    | from {dataset}
-    | where {field} != null
-    | stats sum((({field} - avg({field}))^2)) as variance
-    | eval variance = variance / count()
-    ```
+```sql
+| where {field} != null
+| stats sum((({field} - avg({field}))^2)) as variance
+| eval variance = variance / count()
+```
 
 This equation calculates the variance of the {field} field in the {dataset} by summing the squared differences between each value and the mean, and dividing by the number of values.
 
@@ -98,7 +97,7 @@ The eval operator is then used to divide the sum of the squared differences by t
 
 You can then use the variance field in your query to analyze the dispersion of the data around the mean. For example, you could use the where operator to filter the data based on the variance, or you could use the display operator to visualize the variance in a chart or graph.
 
-**Note** that the variance() function calculates the sample variance, which is a measure of the spread or dispersion of a sample of data. If you want to calculate the population variance, you can use the pvariance() function instead. The population variance is a measure of the spread or dispersion of an entire population of data.
+
 #### Variance Example
 
 Imagine that you are working for an insurance company, and you have been asked to analyze multiple datasets to identify trends or patterns in fraud claims that could help the company optimize its fraud detection processes. You have data on the amount of time it takes to process different types of fraud claims, and you want to use variance to identify which types of claims take the longest to process and which types of claims take the shortest to process.
