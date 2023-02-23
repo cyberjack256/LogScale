@@ -1,0 +1,11 @@
+Humio packages and Splunk TA (Technology Add-Ons) are both software components that extend the functionality of their respective log management and analysis platforms. However, there are some key differences between the two:
+
+Architecture: Humio is designed as a distributed, real-time log management platform with a focus on high ingest rates and low query latency. Its packages are typically lightweight and designed to provide specific functionality such as parsing data from a specific source or integrating with a particular service. In contrast, Splunk is more of a monolithic platform that can handle a wide range of use cases and has a more complex architecture. Splunk TA's are designed to add functionality to specific use cases, such as ingesting data from a specific source or processing data in a particular way.
+
+Ease of use: Humio packages are typically easier to install and use than Splunk TA's. Humio's platform is designed to be intuitive and easy to use, so its packages follow the same principle. Splunk, on the other hand, can be more complex to configure and use, so its TA's often require more effort to set up and use effectively.
+
+Openness: Humio is a newer platform that has embraced open-source principles and has an active community contributing to its development. This means that its packages are often open source and freely available to use and modify. Splunk, on the other hand, is a more proprietary platform, and its TA's are often developed and maintained by Splunk or its partners.
+
+Price: Humio has a more straightforward pricing model than Splunk, which can be more expensive. Humio charges based on data ingested per day, while Splunk charges based on the number of users and the volume of data indexed. This can make Humio a more cost-effective option for smaller organizations or those with lower data volumes.
+
+Overall, Humio packages and Splunk TA's are both useful tools for extending the functionality of their respective log management and analysis platforms. However, they have different architectures, ease of use, openness, and pricing models, so the best option for a particular organization will depend on their specific needs and requirements.
