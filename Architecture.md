@@ -1,3 +1,62 @@
+LogScale
+```bash
+#!/bin/bash
+
+# Define the directories to remove
+dirs_to_remove=(/opt/data /opt/data/kafka-data /home/vagrant)
+
+# Loop through the directories and remove them if they exist with sudo permission
+for dir in "${dirs_to_remove[@]}"
+do
+    if [ -d "$dir" ]
+    then
+        echo "WARNING: You are about to destroy $dir, which may affect any running Docker environments."
+        read -p "Are you sure you want to continue? [y/n] " choice
+        case "$choice" in 
+            y|Y )
+                echo "Removing $dir..."
+                sudo rm -rf "$dir"
+                ;;
+            * )
+                echo "Aborting script."
+                exit 1
+                ;;
+        esac
+    else
+        echo "$dir does not exist."
+    fi
+done
+
+# Verify that the directories have been removed
+for dir in "${dirs_to_remove[@]}"
+do
+    if [ -d "$dir" ]
+    then
+        echo "Failed to remove $dir. Aborting script."
+        exit 1
+    fi
+done
+
+# Create new directories with sudo permission
+echo "Creating new directories..."
+sudo mkdir -p /opt/data/kafka-data /opt/data /home/vagrant
+
+# Verify that the directories have been created
+for dir in "${dirs_to_remove[@]}"
+do
+    if [ ! -d "$dir" ]
+    then
+        echo "Failed to create $dir. Aborting script."
+        exit 1
+    fi
+done
+
+echo "Directories have been removed and new directories have been created."
+
+sudo docker run -d --restart-=always -v /opt/data:data -v /opt/data/kafaka-data:/kafka-data -v /home/vagrant:/etc/humio:ro --add-host ip-XXX-XX-X-XX.ec2.internal:127.0.0.1 --net-host --name=logscale --ulimit="nofile=8192:8192" --env-file=humio.conf humio/humio:stable
+
+```
+
 Shipper
 
 ```bash
