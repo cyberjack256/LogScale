@@ -1,22 +1,44 @@
-import csv
+import pandas as pd
+import folium
 
-# Open the input file and create the output file
-with open('input.csv', newline='') as infile, open('output.csv', 'w', newline='') as outfile:
+# Load the dataset into a pandas dataframe
+df = pd.read_csv('your_dataset.csv')
 
-    # Create a CSV reader and writer objects
-    reader = csv.reader(infile)
-    writer = csv.writer(outfile)
+# Define the boroughs and their colors
+boroughs = {
+    'MANHATTAN': 'red',
+    'BROOKLYN': 'blue',
+    'QUEENS': 'green',
+    'BRONX': 'orange',
+    'STATEN ISLAND': 'purple'
+}
 
-    # Write the header row to the output file
-    writer.writerow(['CRASH DATE', 'CRASH TIME', 'BOROUGH', 'ZIP CODE', 'LATITUDE', 'LONGITUDE', 'LOCATION', 'ON STREET NAME', 'CROSS STREET NAME', 'OFF STREET NAME', 'NUMBER OF PERSONS INJURED', 'NUMBER OF PERSONS KILLED', 'NUMBER OF PEDESTRIANS INJURED', 'NUMBER OF PEDESTRIANS KILLED', 'NUMBER OF CYCLIST INJURED', 'NUMBER OF CYCLIST KILLED', 'NUMBER OF MOTORIST INJURED', 'NUMBER OF MOTORIST KILLED', 'CONTRIBUTING FACTOR VEHICLE 1', 'CONTRIBUTING FACTOR VEHICLE 2', 'CONTRIBUTING FACTOR VEHICLE 3', 'CONTRIBUTING FACTOR VEHICLE 4', 'CONTRIBUTING FACTOR VEHICLE 5', 'UNIQUE KEY', 'VEHICLE TYPE CODE 1', 'VEHICLE TYPE CODE 2', 'VEHICLE TYPE CODE 3', 'VEHICLE TYPE CODE 4', 'VEHICLE TYPE CODE 5'])
+# Create a map object centered on NYC
+map = folium.Map(location=[40.7128, -74.0060], zoom_start=10)
 
-    # Loop through each row in the input file
-    for row in reader:
+# Add a layer with the borough boundaries
+folium.GeoJson(
+    'https://data.cityofnewyork.us/api/geospatial/tqmj-j8zm?method=export&format=GeoJSON',
+    name='boroughs'
+).add_to(map)
 
-        # Replace the empty values with "EMPTY"
-        for i in range(len(row)):
-            if not row[i]:
-                row[i] = "EMPTY"
+# Add a marker for each collision using the borough and latitude and longitude columns
+for index, row in df.iterrows():
+    if pd.isna(row['LATITUDE']) or pd.isna(row['LONGITUDE']) or pd.isna(row['BOROUGH']):
+        continue
+    borough = row['BOROUGH'].upper()
+    if borough not in boroughs:
+        continue
+    popup_text = f"Date: {row['CRASH DATE']}<br>Time: {row['CRASH TIME']}<br>Location: {row['LOCATION']}"
+    marker = folium.Marker(
+        [row['LATITUDE'], row['LONGITUDE']],
+        popup=popup_text,
+        icon=folium.Icon(color=boroughs[borough])
+    )
+    marker.add_to(map)
 
-        # Write the updated row to the output file
-        writer.writerow(row)
+# Add a layer control to toggle the borough boundaries on and off
+folium.LayerControl().add_to(map)
+
+# Save the map as an HTML file and open it in your web browser
+map.save('collision_map.html')
