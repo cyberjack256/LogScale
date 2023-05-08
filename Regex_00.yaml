@@ -1,0 +1,122 @@
+name: Regex_00
+timeSelector: {}
+sharedTimeInterval:
+  enabled: false
+  isLive: false
+  start: 1d
+widgets:
+  note-1683497343782-0:
+    x: 5
+    y: 0
+    height: 5
+    text: |-
+      ## Character Classes
+      | Class | Meaning           |
+      |-------|-------------------|
+      | \d    | digits (≡ [0-9])  |
+      | \D    | not digits (≡ [^0-9])|
+      | \s    | whitespace (≡ [\t\n\f\r ])|
+      | \S    | not whitespace (≡ [^\t\n\f\r ])|
+      | \w    | word characters (≡ [0-9A-Za-z_])|
+      | \W    | not word characters (≡ [^0-9A-Za-z_])|
+    width: 3
+    title: Regex Notes
+    type: note
+  note-1683497643784-1:
+    x: 5
+    y: 5
+    height: 6
+    text: |
+      ## Quantifiers and Greediness
+      | Common Repetitive Quantifiers | Meaning             |
+      |-------------------------------|---------------------|
+      | x*                             | zero or more x, prefer more|
+      | x+                             | one or more x, prefer more|
+      | x?                             | zero or one x, prefer one|
+      | x{n,m}                         | n or n+1 or ... or m x, prefer more|
+      | x{n,}                          | n or more x, prefer more|
+      | x{n}                           | exactly n x|
+    width: 3
+    title: Regex Notes
+    type: note
+  7253dc34-1994-4b1f-95a7-f5ad28b7ee2b:
+    x: 8
+    y: 0
+    height: 5
+    text: |-
+      ## Matching Characters
+      | Singular Expressions | Example  |
+      |----------------------|----------|
+      | a specific character | a        |
+      | any character including new line | .  |
+      | character class      | [xyz]    |
+      | negated character class | [^xyz] |
+      | character class      | \d       |
+      | negated character class | \D     |
+    width: 3
+    title: Regex Notes
+    type: note
+  note-1680801795867-0:
+    x: 0
+    y: 0
+    height: 4
+    text: |-
+      ## Capturing Groups
+      | Capturing Group    | Meaning                               |
+      |--------------------|---------------------------------------|
+      | (re)               | numbered capturing group (submatch)   |
+      | (?P&lt;name&gt;re)  | named & numbered capturing group (submatch) |
+      | (?:re)             | non-capturing group                   |
+    width: 5
+    title: Regex Notes
+    type: note
+  note-1680800585813-0:
+    x: 0
+    y: 4
+    height: 12
+    text: "## Non-Capture Groups Are Common\n\n### Example 1: (Non-Capture Group Match)\
+      \ Extracting Values Between Double Quotes\n```\nkey1=\"value1\" key2=\"value2\"\
+      \ key3=\"value3\"\n```\nPattern: `(.*?)`\n### Example 2: (Non-Capture Group\
+      \ Match) Finding a Specific Error Message\n**Test String:**\n```\nINFO: System\
+      \ running normally. ERROR: Disk space low. ERROR: Network connection unstable.\n\
+      ```\n**Pattern:** `ERROR: (.*?)\\.`\n**Matches:** \n```\nDisk space low`, Network\
+      \ connection unstable\n```\n### Example 3:  (Non-Capture Group Match) Extracting\
+      \ URLs\n**Test String:**\n```\nAccessing https://www.example.com/path/to/resource\n\
+      ```\nPattern: `(https?://\\S+)`\nMatches: \n```\nhttps://www.example.com/path/to/resource\n\
+      ```"
+    width: 5
+    title: Regex Notes
+    type: note
+  cc8784d8-367e-4b55-a213-72300561f4df:
+    x: 8
+    y: 5
+    height: 6
+    text: |-
+      ## Greediness and Laziness
+      | Lazy Quantifiers | Description          |
+      |------------------|----------------------|
+      | x*?              | zero or more x, prefer fewer|
+      | x+?              | one or more x, prefer fewer|
+      | x??              | zero or one x, prefer zero|
+      | x{n,m}?          | n or n+1 or ... or m x, prefer fewer|
+      | x{n,}?           | n or more x, prefer fewer|
+      | x{n}?            | exactly n x|
+    width: 3
+    title: Regex Notes
+    type: note
+  note-1683497830785-2:
+    x: 5
+    y: 11
+    height: 5
+    text: "## Meta Characters: \n\n`[$()*-.?[\\^{|]`\n\nMeta characters are special\
+      \ characters in regex that have a unique meaning when used within a pattern.\
+      \ These characters allow us to create more advanced regex patterns and perform\
+      \ complex searches in LogScale.\n\n## Using Metacharacters\n\nTo use a meta\
+      \ character as a literal character in our regex pattern, we need to first escape\
+      \ it using the backslash `\\`.\n\n**Example**: Match a log entry containing\
+      \ a file path like \"C:\\Windows\\System32\":\n```\nC:\\\\Windows\\\\System32\n\
+      ```"
+    width: 7
+    title: New Note
+    type: note
+$schema: https://schemas.humio.com/dashboard/v0.7.0
