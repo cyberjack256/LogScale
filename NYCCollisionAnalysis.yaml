@@ -1,0 +1,313 @@
+name: NYC Collision Analysis
+timeSelector: {}
+sharedTimeInterval:
+  enabled: false
+  isLive: false
+  start: 1d
+widgets:
+  note-1684257447501-0:
+    x: 10
+    y: 0
+    height: 4
+    text: "# Trending Data [Live]\n        \nLive data and trend of average injuries,\
+      \ fatalities, and total danger by borough is displayed within these three widgets.\
+      \ Change the borough with the parameter selector. \n\nThe Dashboard is currently\
+      \ showing data for the `{{ parameters.borough }}` for the period of `{{startTime}}`\
+      \ to  `{{endTime}}`,"
+    width: 2
+    title: ' '
+    type: note
+  42db1618-1220-4fc7-9f5f-fafbd75cbae2:
+    x: 3
+    y: 13
+    height: 5
+    queryString: |-
+      veh_factor_1 != EMPTY and veh_factor_1 != "Unspecified"
+      |rename(#borough, as=source)
+      |rename(veh_factor_1, as=target)
+      |groupBy([source, target], function=count(as=weight))
+    end: now
+    start: 10y
+    width: 4
+    options:
+      labelLimit: 569
+      labelPosition: outside
+      showAxes: false
+      stackSortOrder: descending
+    visualization: sankey
+    title: Factors in Collisions Per Borough
+    isLive: false
+    type: query
+  4615d2cf-4f2a-459f-bcca-e244f808bfdb:
+    x: 0
+    height: 6
+    queryString: |-
+      cyc_fatality > 1 or cyc_injured > 1
+      | dayOfWeekName := time:dayOfWeekName()
+      | dayOfWeek := time:dayOfWeek()
+      | hour := time:hour()
+      | groupBy([dayOfWeekName, dayOfWeek, hour])
+      | sort([dayOfWeek, hour], type=[number, number], order=[asc, desc], limit=200)
+      | drop(dayOfWeek)
+    end: now
+    start: 10y
+    width: 12
+    y: 18
+    interactions:
+    - conditions: null
+      name: 'Interaction #1'
+      titleTemplate: null
+      useWidgetTimeWindow: true
+      dashboardReference:
+        name: W.3.2_02_NYC_WEEKDAY
+        packageSpecifier: null
+        repoOrViewName: 01_nyc_traffic
+      arguments: {}
+      openInNewTab: true
+      type: dashboardlink
+    options:
+      legendTitle: Count of Collisions with Inj/Fat
+      labelAngle: 37
+      xAxisTitle: Day of the Week
+      colorPalette: greenRed
+      yAxisTitle: Hour of the Day
+      labelAlign: center
+      includeHistogram: true
+      gapBetweenRectangles: false
+      reversePalette: false
+    visualization: heat-map
+    title: Most Dangerous Days of the Week for Cyclists
+    isLive: false
+    type: query
+  fdeda4e9-cb86-4783-8459-4b85773a647b:
+    x: 0
+    y: 13
+    height: 5
+    queryString: |-
+      #borough = ?borough
+      veh_factor_1 !=Unspecified
+      | hour:=formatTime(format="%H")
+      | in(field="hour", values=[23,00,01])
+      | top([veh_factor_1])
+    visualization: table-view
+    end: now
+    start: 15y
+    width: 3
+    title: Top Contributing Factors
+    isLive: false
+    type: query
+  0843a8a7-776f-4bef-a973-ffabc21377ac:
+    x: 8
+    y: 0
+    height: 4
+    queryString: |-
+      #borough = ?borough
+      | year < 2023 year > 2012
+      | eval(total_danger = total_injured + total_fatality)
+      | timeChart(span=1year,  function=avg(field="total_danger"))
+    end: now
+    start: 5y
+    width: 2
+    options:
+      trend-value: pct
+      first-bucket: exclude
+      yAxisTitle: Total Danger per Collision
+      default: {}
+      sparkline-type: gradient
+      text-color: '#a853ee'
+      sparkline-zero: true
+    visualization: single-value
+    title: ' '
+    isLive: false
+    type: query
+  72acddab-60df-4222-90a5-b836139e2c18:
+    x: 0
+    y: 24
+    description: Enter a Regular Expression in the regex parameter to return results.
+    height: 4
+    queryString: regex(?regex, field=@rawstring, flags="i")
+    end: now
+    start: 5y
+    width: 12
+    options:
+      columns: '[{"type":"field","fieldName":"@timestamp","format":"timestamp","width":180},{"type":"field","fieldName":"@rawstring","format":"logline"}]'
+      newestAtBottom: 'true'
+      showOnlyFirstLine: 'false'
+    visualization: list-view
+    title: Regular Expression Event Search Results
+    isLive: false
+    type: query
+  094a5455-555c-43f7-bc85-feaaf5648139:
+    x: 7
+    y: 13
+    height: 5
+    queryString: |-
+      #borough = ?borough
+      | latitude != EMPTY longitude != EMPTY
+      | worldMap(lat=latitude, lon=longitude)
+    end: now
+    start: 5y
+    width: 5
+    options:
+      minOpacity: 40
+      fixedSize: 11
+      zLevel: 2.4
+      projection: orthographic
+      rotZ: -1
+    visualization: world-map
+    title: Latitude and Longitude Coordinates
+    isLive: false
+    type: query
+  976db627-3a13-4b8c-87e1-b1250b0312a8:
+    x: 4
+    y: 0
+    height: 4
+    queryString: |-
+      #borough = ?borough
+      | year < 2023 year > 2012
+      | timeChart(span=1year,  function=avg(field="total_injured"))
+    end: now
+    start: 5y
+    width: 2
+    options:
+      trend-value: pct
+      suffix: Injuries
+      first-bucket: exclude
+      yAxisTitle: Total Individuals Injured per Collision
+      value-format: metric
+      default: {}
+      sparkline-type: gradient
+      text-color: '#ffa399'
+      sparkline-zero: true
+    visualization: single-value
+    title: ' '
+    isLive: false
+    type: query
+  af4cad96-fb47-48a9-981a-27a6415d16b8:
+    x: 0
+    height: 4
+    queryString: in(field=#borough, values=[?borough])
+    end: now
+    start: 1y
+    width: 12
+    y: 4
+    interactions:
+    - conditions:
+      - argument: EMPTY
+        fieldName: latitude
+        operator: not-equal
+      - argument: EMPTY
+        fieldName: longitude
+        operator: not-equal
+      name: Google Mapy Street View
+      titleTemplate: Street View at {{fields.latitude}},{{fields.longitude}}
+      urlTemplate: https://www.google.com/maps/@{{fields.latitude}},{{fields.longitude}},3a,75y,90t/data=!3m4!1e1!3m2!1s{panoId}!2e0
+      openInNewTab: true
+      type: customlink
+    options:
+      columns: '[{"type":"field","fieldName":"@timestamp","format":"timestamp","width":180},{"type":"field","fieldName":"#borough","format":"text","width":92},{"type":"field","fieldName":"total_fatality","format":"number","width":137},{"type":"field","fieldName":"total_injured","format":"number","width":130},{"type":"field","fieldName":"street_on","format":"text","width":272},{"type":"field","fieldName":"street_cross","format":"text","width":220},{"type":"field","fieldName":"latitude","format":"text","width":100},{"type":"field","fieldName":"longitude","format":"text","width":107},{"type":"field","fieldName":"street_off","format":"text","width":220},{"type":"field","fieldName":"moto_fatality","format":"text","width":130},{"type":"field","fieldName":"moto_injured","format":"text","width":122},{"type":"field","fieldName":"ped_fatality","format":"text","width":122},{"type":"field","fieldName":"ped_injured","format":"text","width":115},{"type":"field","fieldName":"cyc_fatality","format":"text","width":122},{"type":"field","fieldName":"cyc_injured","format":"text","width":115}]'
+      newestAtBottom: 'true'
+      showOnlyFirstLine: 'false'
+    visualization: list-view
+    title: Events Within the Time Range
+    isLive: false
+    type: query
+  note-1684255428505-0:
+    x: 0
+    y: 0
+    height: 4
+    text: |-
+      # NYC Live Traffic Analysis Dashboard
+
+      Welcome to our Traffic Analysis Dashboard!
+      This is where we monitor real-time traffic data and generate insights to improve road safety. We analyze various metrics including traffic volume, incidents, and violations to identify patterns and areas of concern.
+
+      **Below are some useful resources for you:**
+
+      - LogScale Documentation: [https://docs.logscale.com](https://docs.logscale.com)
+      - Cyclist Safety Guidelines: [https://www.nhtsa.gov/road-safety/bicycle-safety](https://www.nhtsa.gov/road-safety/bicycle-safety)
+      - Pedestrian Safety Guidelines: [https://www.nhtsa.gov/road-safety/pedestrian-safety](https://www.nhtsa.gov/road-safety/pedestrian-safety)
+      - Weather Data Over Time: [NOAA Climate Data Online (CDO)](https://www.ncei.noaa.gov/access/search/data-search/global-summary-of-the-month)
+      - Open NYC Database: [NYC Open Data](https://opendata.cityofnewyork.us/)
+      - Population Over Time: [NYC Story Map](https://storymaps.arcgis.com/stories/c7bf9175168f4a2aa25980cf31992342#n-lahpix)
+      - Research on Mitigating Traffic Collisions Involving Injuries: [Insurance Institute for Highway Safety (IIHS)](https://www.iihs.org/topics/pedestrians-and-bicyclists)
+    width: 4
+    title: ' '
+    type: note
+  5f56d795-c973-4439-8a78-8d32fc37f3b9:
+    x: 0
+    y: 8
+    height: 5
+    queryString: |-
+      | dayOfWeekName := time:dayOfWeekName()
+      | dayOfWeek := time:dayOfWeek()
+      | hour := time:hour()
+      | groupBy([dayOfWeekName, dayOfWeek, hour])
+      | sort([dayOfWeek, hour], type=[number, number], order=[asc, desc], limit=200)
+      | drop(dayOfWeek)
+    end: now
+    start: 10y
+    width: 12
+    options:
+      series: {}
+      xZero: false
+      xAxisTitle: Collisions per Hour
+      legend: true
+      yAxisTitle: Hour of the Day
+      symbolOpacity: 0.5
+      xScaleType: log
+      symbolSize: 500
+      inputDataFormat: long
+      yZero: false
+      legendPosition: right
+      legendTitle: Day of the Week
+      regression: true
+      regressionType: linear
+    visualization: scatter-chart
+    title: Days with Collisions Involving Inj/Fat
+    isLive: false
+    type: query
+  2e70834b-8738-40cc-a01c-470af54b329d:
+    x: 6
+    y: 0
+    height: 4
+    queryString: |-
+      #borough = ?borough
+      | year < 2023 year > 2012
+      | timeChart(span=1year,  function=avg(field="total_fatality"))
+    end: now
+    start: 5y
+    width: 2
+    options:
+      trend-value: pct
+      suffix: Fat
+      first-bucket: exclude
+      yAxisTitle: Avg Fatality per Collision
+      default: {}
+      sparkline-type: gradient
+      text-color: '#f76e5f'
+      sparkline-zero: true
+    visualization: single-value
+    title: ' '
+    isLive: false
+    type: query
+$schema: https://schemas.humio.com/dashboard/v0.7.0
+parameters:
+  borough:
+    isMultiParam: false
+    label: borough
+    order: 50
+    values:
+    - NYC
+    - MANHATTAN
+    - QUEENS
+    - BRONX
+    - BROOKLYN
+    type: list
+    defaultValue: NYC
+  regex:
+    isMultiParam: false
+    label: Regex Search
+    order: 50
+    type: text
+    defaultValue: .
