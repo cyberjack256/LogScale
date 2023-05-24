@@ -7,3 +7,14 @@ Matching key values
 }
 ```
 ![regex101 example of matching key values](/regex101_match.jpg?raw=true "Matching Keys")
+
+Splitting values into a new feature (column)
+```sql
+createEvents(["{\"index\":[\"A\", \"B\", \"C\", \"D\", \"E\"]}", 
+              "{\"index\":[\"F\", \"G\", \"H\", \"I\", \"J\"]}", 
+              "{\"index\":[\"K\", \"L\", \"M\", \"N\", \"O\"]}", 
+              "{\"index\":[\"P\", \"Q\", \"R\", \"S\", \"T\"]}", 
+              "{\"index\":[\"U\", \"V\", \"W\", \"X\", \"Y\"]}"])
+| parseJson()
+| split(field="index", strip=true)
+```
