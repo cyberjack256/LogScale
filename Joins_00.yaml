@@ -1,0 +1,115 @@
+name: Joins_00
+timeSelector: {}
+sharedTimeInterval:
+  enabled: false
+  isLive: false
+  start: 1d
+widgets:
+  25298568-8f50-4624-9c2f-60fe778ca15b:
+    x: 0
+    y: 0
+    height: 5
+    queryString: |
+      patient_id !=patient_id #type=appointments_csv| join({#type=patients_csv}, field=patient_id, key=patient_id, repo=02_patients, mode=left, include=[first_name,last_name,age,gender])
+      |table([first_name, last_name, age, gender, appointment_id, doctor_id, reason])
+    visualization: table-view
+    end: now
+    start: 1y
+    width: 5
+    title: Patients and Corresponding Appointments
+    isLive: false
+    type: query
+  36a01570-49c7-4bed-a216-931a2a6bac89:
+    x: 0
+    y: 5
+    height: 5
+    queryString: |-
+      #type=appointments_csv
+      | join({#type=patients_csv age > 40}, field=patient_id, key=patient_id, repo=02_patients, include=[first_name,last_name,age,gender])
+      |table([first_name, last_name, age, gender, appointment_id, doctor_id, reason])
+    visualization: table-view
+    end: now
+    start: 1y
+    width: 5
+    title: Patients over 40
+    isLive: false
+    type: query
+  note-1680986366237-0:
+    x: 5
+    y: 0
+    height: 10
+    text: |-
+      ## Join Statements
+      Join statements combine data from multiple sources based on common fields. In LogScale, `join()` is used to join two or more repositories and return a combined result set.
+      ### Understanding the `join()` Function
+      `join()` statements can be useful when combining information from multiple data stores (repositories). This allows for more comprehensive data analysis and decision-making.
+      ### Join Statements and Set Theory
+      - Inner join: Returns only events with matching values in both repositories (intersection)
+      - Outer join: Returns all events from both repositories, including null values when there's no match (union)
+      ### Joining Datasets in LogScale
+      - Define keys/fields used to match results using `field=name` or `field=[name,name,...]`.
+      #### Example Inner Join
+      An inner join returns only events with matching values in both repositories. For example, joining a repository of access logs with a repository of invalid SSH attempts to find IP addresses associated with both types of events.
+      #### Example Left (Outer) Join
+      - A left join returns all events from both repositories, including null values when there's no match in the other repository. For example, joining a repository of access logs with a repository of usernames to find all events with an error status OR those that include an IP address with a username from the access logs.
+      ### Important Notes Regarding Joins
+
+      - Keys Fields: Define keys or fields used to match up results using `field=”` or `key=equals”`.
+      - Modes: `join()` has two modes: `inner` (default) and `left`. `inner` only lets events that match the join key(s) through. - If you specify `mode=left`, events that don’t match the join key(s) will also pass through.
+      - Max: Use the `max=` parameter to specify how many rows/events are picked up in the subquery. If a subquery has multiple events with the same join key, up to the specified `max` rows are emitted.
+      - Start and End: Use the `start=` and `end=` parameters to specify an alternative time interval for the query.
+      - View (permission context): Use the `view=` parameter to direct the subquery to run in context in a different repository or view (default: main query context).
+      - Live: Use the `live=` parameter to control if the subquery runs as a live query.
+      ### Join Syntax
+      The `join()` function's signature looks like this:
+      ```
+      join({subquery}, field=arg1, key=arg2, repo=arg3, mode=inner|left, include[field1, filed2])
+      ```
+      **Note:** The unnamed subquery argument, and the named field and key arguments, are required. The named repo, include, and mode parameters are optional.
+
+      #### Joining Two Repositories
+      To join two repositories, use the optional repo parameter to define the repository (arg3) you want the subquery to run against.
+      16:40
+      primary query
+      | join({subquery}, field=arg1, key=arg2, repo=arg3)
+      16:40
+      #### Limitations of Live Joins
+
+      Joins can simulate being live by repeatedly running at a time interval determined by the server.
+      Results will appear when the query is re-run, not when data is ingested.
+      LogScale notions of liveness and joins are not compatible, meaning that the results of live queries using the `join()` function may become incorrect over time.
+      ### Best Practices for Join Queries
+      - Ensure the right query is significantly smaller than the left query for better performance.
+      - Be aware that using live queries with the `join()` function has limitations due to constantly changing data.
+
+      **Example 1:** Inner join to find patient details for each appointment
+      In this example, we will join the appointments repository with the patients repository to get the patient details for each appointment.
+      ```
+      #type=appointments_csv
+      | join({#type=patients}, field=patient_id, key=patient_id, repo=patients, include=[first_name,last_name,age,gender])
+      | table([first_name, last_name, age, gender, appointment_id, doctor_id, reason])
+      ```
+      This query will return a result set containing appointment details along with the corresponding patient details for each appointment, where the patient_id field in both repositories matches.
+
+      **Example 2:** Left join to find all appointments with patient details when available
+      In this example, we will use a left join to return all appointment records along with patient details when available.
+      ```
+      #type=appointments_csv
+      | join({#type=patients_csv}, field=patient_id, key=patient_id, repo=02_patients, mode=left, include=[first_name,last_name,age,gender])
+      | table([first_name, last_name, age, gender, appointment_id, doctor_id, reason])
+
+      ```
+      This query will return a result set containing all appointments. For appointments with a matching patient_id in the patients repository, the patient details will be included in the result set. For appointments without a matching patient_id, the patient details will be null.
+
+      **Example 3:** Inner join to find appointments for patients over a certain age
+      In this example, we will find all appointments for patients over a certain age. First, we will filter patients based on their age in the subquery, and then join the appointments repository with the filtered patients repository.
+      ```
+      #type=appointments_csv
+      | join({#type=patients_csv age = 40}, field=patient_id, key=patient_id, repo=02_patients, include=[first_name,last_name,age,gender])
+      |table([first_name, last_name, age, gender, appointment_id, doctor_id, reason])
+      ```
+      This query will return a result set containing appointment details for patients over 40 years old.
+    width: 7
+    title: Joins Series
+    type: note
+$schema: https://schemas.humio.com/dashboard/v0.11.0

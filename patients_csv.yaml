@@ -1,0 +1,8 @@
+name: patients_csv
+tests:
+- 10,Isabella,Wilson,42,Female
+fieldsToBeRemovedBeforeParsing: []
+$schema: https://schemas.humio.com/parser/v0.2.0
+script: parseCsv(columns=[patient_id,first_name,last_name,age,gender])| case {patient_id="patient_id"
+  | dropEvent();* }
+tagFields: []
