@@ -12,7 +12,7 @@
 ## Square Brackets `[]`
 
 ### LogScale
-- Used to define arrays or lists.
+- Used to define arrays or lists (e.g. calling multiple fields field=() vice field=([]).
 
 ### Splunk SPL
 - Used to define subsearches, which are searches that run within another search.
@@ -25,11 +25,3 @@
 
 ### Splunk SPL
 - Not commonly used. When they are used, it's typically in the context of advanced statistical commands or macros.
-
-## General Syntax
-
-### LogScale
-- More similar to traditional programming languages, with a focus on expressions and functions.
-
-### Splunk SPL
-- Based on a pipeline model where each command or function operates on the results of the previous command or function. This is represented by the pipe character `|`.
