@@ -100,11 +100,11 @@ with open("fake_conn.log", "w") as conn_f, open("fake_dns.log", "w") as dns_f, o
         id_orig_p = random.choice(protocols_ports[proto])
         service = random.choice(list(services_ports.keys()))
         id_resp_p = random.choice(services_ports[service])
-        
-    # Choose service and corresponding protocol
+
+        # Choose service and corresponding protocol
         service = random.choice(list(service_protocol_mapping.keys()))
         proto = service_protocol_mapping[service]
-    
+
         # Insert malicious scenario randomly
         if random.random() < 0.01:  # 1% chance of malicious scenario
             id_orig_h = malicious_ip
@@ -161,14 +161,15 @@ with open("fake_conn.log", "w") as conn_f, open("fake_dns.log", "w") as dns_f, o
         user_agent = random.choice(user_agents)
         request_body_len = random.randint(0, 2000)
         response_body_len = random.randint(0, 2000)
-        status_code = random.randint(200, 404)
-        status_msg = "OK"
-        info_code = 0
-        info_msg = "(empty)"
+        status_code = random.randint
+        status_code = random.randint(200, 500)
+        status_msg = "OK" if status_code == 200 else "Error"
+        info_code = "-"
+        info_msg = "-"
         tags = "(empty)"
-        username = "(empty)"
-        password = "(empty)"
-        proxied = "(empty)"
+        username = "-"
+        password = "-"
+        proxied = "-"
         orig_fuids = "(empty)"
         orig_mime_types = "(empty)"
         resp_fuids = "(empty)"
@@ -185,17 +186,11 @@ with open("fake_conn.log", "w") as conn_f, open("fake_dns.log", "w") as dns_f, o
         cert_chain_fuids = "(empty)"
         client_cert_chain_fuids = "(empty)"
         subject = "CN=www.faceclone.com"
-        issuer = "CN=FaceClone CA"
-        client_subject = "(empty)"
-        client_issuer = "(empty)"
-        validation_status = "(empty)"
-        ja3 = "(empty)"
-        ja3s = "(empty)"
+        issuer = "CN=Faceclone Root CA"
+        client_subject = "-"
+        client_issuer = "-"
+        validation_status = "ok"
+        ja3 = fake.sha256()
+        ja3s = fake.sha256()
 
         ssl_f.write(f"{ts}\t{uid}\t{id_orig_h}\t{id_orig_p}\t{id_resp_h}\t{id_resp_p}\t{version}\t{cipher}\t{server_name}\t{resumed}\t{established}\t{cert_chain_fuids}\t{client_cert_chain_fuids}\t{subject}\t{issuer}\t{client_subject}\t{client_issuer}\t{validation_status}\t{ja3}\t{ja3s}\n")
-
-    # Generate DNS responses for the ongoing DNS queries
-    for uid, dns_query in ongoing_dns_queries.items():
-        rcode = random.randint(0, 5)
-        rcode_name = random.choice(dns_rcode_names)
-        dns_f.write(f"{dns_query['ts']}\t{uid}\t{dns_query['id_orig_h']}\t{dns_query['id_orig_p']}\t{dns_query['id_resp_h']}\t{dns_query['id_resp_p']}\t{dns_query['proto']}\t{dns_query['trans_id']}\t{dns_query['rtt']}\t{dns_query['query']}\t{dns_query['qclass']}\t{dns_query['qclass_name']}\t{dns_query['qtype']}\t{dns_query['qtype_name']}\t{rcode}\t{rcode_name}\t{dns_query['AA']}\t{dns_query['TC']}\t{dns_query['RD']}\t{dns_query['RA']}\t{dns_query['Z']}\t{dns_query['answers']}\t{dns_query['TTLs']}\t{dns_query['rejected']}\n")
