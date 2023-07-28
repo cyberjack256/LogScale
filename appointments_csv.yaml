@@ -1,8 +1,0 @@
-name: appointments_csv
-tests:
-- 10,10,1,2023-04-17,10:00,Physical exam
-fieldsToBeRemovedBeforeParsing: []
-$schema: https://schemas.humio.com/parser/v0.2.0
-script: parsecsv(columns=[appointment_id,patient_id,doctor_id,date,time,reason])|
-  case {patient_id="patient_id" | dropEvent();* }
-tagFields: []
