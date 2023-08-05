@@ -1,5 +1,10 @@
 # Learning LogScale
 
+The Motor Vehicle Collisions vehicle table contains details on each vehicle involved in the crash. Each row represents a motor vehicle involved in a crash. The data in this table goes back to April 2016 when crash reporting switched to an electronic system.  
+The Keys between `Vehicles` and `Person` is the primary key `VEHICLE_ID` in `Person` and the foreign key `UNIQUE_ID` in Vehicles .
+
+The Motor Vehicle Collisions person table contains details for people involved in the crash. Each row represents a person (driver, occupant, pedestrian, bicyclist,..) involved in a crash. The data in this table goes back to April 2016 when crash reporting switched to an electronic system.
+The Key between `Crashes` and `Person` is the `COLLISION_ID` field. 
 
 ## Contributing
 
