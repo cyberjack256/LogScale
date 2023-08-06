@@ -26,97 +26,105 @@ This table provides a clear overview of the primary and foreign keys in the data
 ---
 
 These code blocks provide the naming convention used to rename and link the features in the tables together.
-
+```python
 ### Rename Keys from the Original Data
 
-```python
-crash_df.rename(columns={
-    'COLLISION_ID': 'collision_id',
-    'ACCIDENT_DATE': 'date',
-    'ACCIDENT_TIME': 'time',
-    'BOROUGH': 'borough',
-    'ZIP CODE': 'zip_code',
-    'LATITUDE': 'latitude',
-    'LONGITUDE': 'longitude',
-    'LOCATION': 'location',
-    'ON STREET NAME': 'street_on',
-    'CROSS STREET NAME': 'street_cross',
-    'OFF STREET NAME': 'street_off',
-    'NUMBER OF PERSONS INJURED': 'total_injured',
-    'NUMBER OF PERSONS KILLED': 'total_killed',
-    'NUMBER OF PEDESTRIANS INJURED': 'ped_injured',
-    'NUMBER OF PEDESTRIANS KILLED': 'ped_killed',
-    'NUMBER OF CYCLIST INJURED': 'cyc_injured',
-    'NUMBER OF CYCLIST KILLED': 'cyc_killed',
-    'NUMBER OF MOTORIST INJURED': 'moto_injured',
-    'NUMBER OF MOTORIST KILLED': 'moto_killed',
-    'CONTRIBUTING FACTOR VEHICLE 1': 'veh_factor_1',
-    'CONTRIBUTING FACTOR VEHICLE 2': 'veh_factor_2',
-    'CONTRIBUTING FACTOR VEHICLE 3': 'veh_factor_3',
-    'CONTRIBUTING FACTOR VEHICLE 4': 'veh_factor_4',
-    'CONTRIBUTING FACTOR VEHICLE 5': 'veh_factor_5',
-    'VEHICLE TYPE CODE 1': 'veh_type_1',
-    'VEHICLE TYPE CODE 2': 'veh_type_2',
-    'VEHICLE TYPE CODE 3': 'veh_type_3',
-    'VEHICLE TYPE CODE 4': 'veh_type_4',
-    'VEHICLE TYPE CODE 5': 'veh_type_5'
-}, inplace=True)
-```
+# Import necessary libraries
+import pandas as pd
+import numpy as np
 
-```python
-vehicles_df.rename(columns={
-    'UNIQUE_ID': 'veh_unique_id',
-    'COLLISION_ID': 'veh_collision_id',
-    'ACCIDENT_DATE': 'veh_date',
-    'ACCIDENT_TIME': 'veh_time',
-    'VEHICLE_ID': 'veh_id',
-    'STATE_REGISTRATION': 'veh_state_registration',
-    'VEHICLE_TYPE': 'veh_type',
-    'VEHICLE_MAKE': 'veh_make',
-    'VEHICLE_MODEL': 'veh_model',
-    'VEHICLE_YEAR': 'veh_year',
-    'TRAVEL_DIRECTION': 'veh_travel_direction',
-    'VEHICLE_OCCUPANTS': 'veh_occupants',
-    'DRIVER_SEX': 'veh_driver_sex',
-    'DRIVER_LICENSE_STATUS': 'veh_driver_license_status',
-    'DRIVER_LICENSE_JURISDICTION': 'veh_driver_license_jurisdiction',
-    'PRE_ACDNT_ACTION': 'veh_pre_accident_action',
-    'POINT_OF_IMPACT': 'veh_point_of_impact',
-    'VEHICLE_DAMAGE': 'veh_damage',
-    'VEHICLE_DAMAGE_1': 'veh_damage_1',
-    'VEHICLE_DAMAGE_2': 'veh_damage_2',
-    'VEHICLE_DAMAGE_3': 'veh_damage_3',
-    'PUBLIC_PROPERTY_DAMAGE': 'veh_public_property_damage',
-    'PUBLIC_PROPERTY_DAMAGE_TYPE': 'veh_public_property_damage_type',
-    'CONTRIBUTING_FACTOR_1': 'veh_contributing_factor_1',
-    'CONTRIBUTING_FACTOR_2': 'veh_contributing_factor_2'
-}, inplace=True)
-```
+# Load the data
+persons_url = "URL_TO_PERSONS_DATA"
+vehicles_url = "URL_TO_VEHICLES_DATA"
 
-```python
+persons_df = pd.read_csv(persons_url)
+vehicles_df = pd.read_csv(vehicles_url)
+
+# Data exploration
+print("Persons Data Overview:")
+print(persons_df.head())
+print(persons_df.info())
+
+print("\nVehicles Data Overview:")
+print(vehicles_df.head())
+print(vehicles_df.info())
+
+# Rename columns based on the naming convention
 persons_df.rename(columns={
-    'UNIQUE_ID': 'vic_unique_id',
-    'COLLISION_ID': 'vic_collision_id',
-    'ACCIDENT_DATE': 'vic_date',
-    'ACCIDENT_TIME': 'vic_time',
-    'VICTIM_ID': 'vic_id',
+    'UNIQUE_ID': 'vic_id',
+    'COLLISION_ID': 'collision_id',
+    'CRASH_DATE': 'acc_date',
+    'CRASH_TIME': 'acc_time',
+    'VICTIM_ID': 'vic_victim_id',
     'VICTIM_TYPE': 'vic_type',
     'VICTIM_INJURY': 'vic_injury',
-    'VEHICLE_ID': 'vic_vehicle_id',
+    'VEHICLE_ID': 'veh_id',
     'VICTIM_AGE': 'vic_age',
     'EJECTION': 'vic_ejection',
     'EMOTIONAL_STATUS': 'vic_emotional_status',
     'BODILY_INJURY': 'vic_bodily_injury',
-    'POSITION_IN_VEHICLE': 'vic_position_in_vehicle',
+    'POSITION_IN_VEHICLE': 'vic_position',
     'SAFETY_EQUIPMENT': 'vic_safety_equipment',
     'PED_LOCATION': 'ped_location',
     'PED_ACTION': 'ped_action',
     'COMPLAINT': 'vic_complaint',
     'VICTIM_ROLE': 'vic_role',
-    'CONTRIBUTING _FACTOR_1': 'vic_contributing_factor_1',
-    'CONTRIBUTING_FACTOR_2': 'vic_contributing_factor_2',
+    'CONTRIBUTING _FACTOR_1': 'vic_contrib_factor_1',
+    'CONTRIBUTING_FACTOR_2': 'vic_contrib_factor_2',
     'VICTIM_SEX': 'vic_sex'
 }, inplace=True)
+
+vehicles_df.rename(columns={
+    'UNIQUE_ID': 'veh_unique_id',
+    'COLLISION_ID': 'collision_id',
+    'CRASH_DATE': 'acc_date',
+    'CRASH_TIME': 'acc_time',
+    'VEHICLE_ID': 'veh_id',
+    'STATE_REGISTRATION': 'veh_state_reg',
+    'VEHICLE_TYPE': 'veh_type',
+    'VEHICLE_MAKE': 'veh_make',
+    'VEHICLE_MODEL': 'veh_model',
+    'VEHICLE_YEAR': 'veh_year',
+    'TRAVEL_DIRECTION': 'veh_travel_dir',
+    'VEHICLE_OCCUPANTS': 'veh_occupants',
+    'DRIVER_SEX': 'driver_sex',
+    'DRIVER_LICENSE_STATUS': 'driver_license_status',
+    'DRIVER_LICENSE_JURISDICTION': 'driver_license_jurisdiction',
+    'PRE_ACDNT_ACTION': 'pre_acc_action',
+    'POINT_OF_IMPACT': 'point_of_impact',
+    'VEHICLE_DAMAGE': 'veh_damage',
+    'VEHICLE_DAMAGE_1': 'veh_damage_1',
+    'VEHICLE_DAMAGE_2': 'veh_damage_2',
+    'VEHICLE_DAMAGE_3': 'veh_damage_3',
+    'PUBLIC_PROPERTY_DAMAGE': 'public_prop_damage',
+    'PUBLIC_PROPERTY_DAMAGE_TYPE': 'public_prop_damage_type',
+    'CONTRIBUTING_FACTOR_1': 'veh_contrib_factor_1',
+    'CONTRIBUTING_FACTOR_2': 'veh_contrib_factor_2'
+}, inplace=True)
+
+# Combine date and time columns and parse into datetime
+persons_df['datetime'] = pd.to_datetime(persons_df['acc_date'] + ' ' + persons_df['acc_time'])
+vehicles_df['datetime'] = pd.to_datetime(vehicles_df['acc_date'] + ' ' + vehicles_df['acc_time'])
+
+# Drop the original date and time columns
+persons_df.drop(['acc_date', 'acc_time'], axis=1, inplace=True)
+vehicles_df.drop(['acc_date', 'acc_time'], axis=1, inplace=True)
+
+# Data Cleaning
+# Handle missing values
+persons_df.fillna("Unknown", inplace=True)
+vehicles_df.fillna("Unknown", inplace=True)
+
+# Data Enrichment
+# Extracting the day of the week from the datetime column
+persons_df['day_of_week'] = persons_df['datetime'].dt.day_name()
+vehicles_df['day_of_week'] = vehicles_df['datetime'].dt.day_name()
+
+# Save processed data
+persons_df.to_csv("processed_persons.csv", index=False)
+vehicles_df.to_csv("processed_vehicles.csv", index=False)
+
+print("Data processing completed and saved to processed CSV files.")
 ```
 
 ## Contributing
